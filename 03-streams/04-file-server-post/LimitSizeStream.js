@@ -11,12 +11,11 @@ class LimitSizeStream extends stream.Transform {
   }
 
   _transform(chunk, encoding, callback) {
-    /* if (this.isObjectMode) {
+    if (this.isObjectMode) {
       this.size += 1;
     } else {
       this.size += Buffer.byteLength(chunk);
-    } */
-    this.size += Buffer.byteLength(chunk);
+    }
 
     if (this.size > this.limit) {
       callback(new LimitExceededError());

@@ -14,51 +14,52 @@ server.on('request', (req, res) => {
   const filepath = path.join(__dirname, 'files', pathname);
 
 
-  if (pathname.split('/').length > 1) {
+  if (pathname.includes('/') || pathname.includes('..')) {
     res.statusCode = 400;
-    res.end('Invalid directory');
-    res.on('error', (error) => {
-      console.log('Ошибка пути');
-    });
+    res.end('Nested paths are not allowed');
+    return;
   }
 
-  fs.stat(filepath, (err, stat) => {
-    if (!err) {
-      res.statusCode = 409;
-      res.end('The file already exists');
-      req.push(null);
-    }
-  });
-
-  const limitedStream = new LimitSizeStream({limit: 10, encoding: 'utf-8'});
+  
 
   switch (req.method) {
     case 'POST':
-      const stream = fs.createWriteStream(filepath);
+      const limitedStream = new LimitSizeStream({limit: 1e6});
+      const writeStream = fs.createWriteStream(filepath, {flags: 'wx'});
 
-      stream.on('open', () => {
-        req
-            .pipe(limitedStream)
-            .on('error', (error) => {
-              if (error.code === 'LIMIT_EXCEEDED') {
-                res.statusCode = 413;
-                res.end('LIMIT_EXCEEDED');
-              } else {
-                res.statusCode = 500;
-                res.end('Server error');
-              }
-            })
-            .pipe(stream);
+      req.pipe(limitedStream).pipe(writeStream);
 
-            res.end('File created');
+      writeStream.on('error', (error) => {
+        if (error.code === 'EEXIST') {
+          res.statusCode = 409;
+          res.end('File exists');
+        } else {
+          res.statusCode = 500;
+          res.end('Internal server error');
+          fs.unlink(filepath, (error) => {});
+        }
       });
 
+      limitedStream.on('error', (error) => {
+        if (error.code === 'LIMIT_EXCEEDED') {
+          res.statusCode = 413;
+          res.end('File is too big');
+        } else {
+          res.statusCode = 500;
+          res.end('Internal server error');
+        }
+
+        fs.unlink(filepath, (err) => {});
+      })
+
+      writeStream.on('finish', () => {
+        res.statusCode = 201;
+        res.end('file has been saved');
+      })
 
       req.on('aborted', () => {
-        stream.destroy();
-        fs.rm( pathname );
+        fs.unlink(filepath, (error) => {});
       });
-
 
       break;
 
