@@ -5,11 +5,19 @@ const fs = require('fs');
 const LimitSizeStream = require('./LimitSizeStream');
 
 
+const receiveFile = require('./receiveFile');
+
 const server = new http.Server();
 
 server.on('request', (req, res) => {
   const url = new URL(req.url, `http://${req.headers.host}`);
   const pathname = url.pathname.slice(1);
+
+  if (pathname.includes('/') || pathname.includes('..')) {
+    res.statusCode = 400;
+    res.end('Nested paths are not allowed');
+    return;
+  }
 
   const filepath = path.join(__dirname, 'files', pathname);
 
@@ -24,6 +32,7 @@ server.on('request', (req, res) => {
 
   switch (req.method) {
     case 'POST':
+<<<<<<< HEAD
       const limitedStream = new LimitSizeStream({limit: 1e6});
       const writeStream = fs.createWriteStream(filepath, {flags: 'wx'});
 
@@ -60,6 +69,15 @@ server.on('request', (req, res) => {
       req.on('aborted', () => {
         fs.unlink(filepath, (error) => {});
       });
+=======
+      if (!filepath) {
+        res.statusCode = 404;
+        res.end('File not found');
+        return;
+      }
+
+      receiveFile(filepath, req, res);
+>>>>>>> e55dbff3ea423ec6e2ff97051b943aced2b74a69
 
       break;
 
