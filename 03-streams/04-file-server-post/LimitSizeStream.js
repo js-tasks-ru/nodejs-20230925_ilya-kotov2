@@ -14,7 +14,7 @@ class LimitSizeStream extends stream.Transform {
     if (this.isObjectMode) {
       this.size += 1;
     } else {
-      this.size += chunk.length;
+      this.size += Buffer.byteLength(chunk);
     }
 
     if (this.size > this.limit) {
