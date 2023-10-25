@@ -6,7 +6,13 @@ module.exports = class Validator {
   validate(obj) {
     const errors = [];
 
-    for (const field of Object.keys(this.rules)) {
+    const ruleKeys = Object.keys(this.rules);
+
+    Object.keys(obj).forEach((item) => {
+      if (!ruleKeys.includes(item)) errors.push({field: item, error: `unexpected value ${item}`});
+    });
+
+    for (const field of ruleKeys) {
       const rules = this.rules[field];
 
       const value = obj[field];
@@ -31,7 +37,7 @@ module.exports = class Validator {
             errors.push({field, error: `too little, expect ${rules.min}, got ${value}`});
           }
           if (value > rules.max) {
-            errors.push({field, error: `too big, expect ${rules.min}, got ${value}`});
+            errors.push({field, error: `too big, expect ${rules.max}, got ${value}`});
           }
           break;
       }
