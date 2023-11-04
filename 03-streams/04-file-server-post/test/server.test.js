@@ -11,7 +11,7 @@ describe('streams/file-server-post', () => {
   describe('тесты на файловый сервер', () => {
     before((done) => {
       fse.emptyDirSync(filesFolder);
-      server.listen(3001, done);
+      server.listen(3000, done);
     });
 
     after((done) => {
@@ -34,7 +34,7 @@ describe('streams/file-server-post', () => {
         const mtime = fse.statSync(path.join(filesFolder, 'small.png')).mtime;
 
         const request = http.request(
-            'http://localhost:3001/small.png',
+            'http://localhost:3000/small.png',
             {method: 'POST'},
             (response) => {
               const newMtime = fse.statSync(path.join(filesFolder, 'small.png')).mtime;
@@ -57,7 +57,7 @@ describe('streams/file-server-post', () => {
         const mtime = fse.statSync(path.join(filesFolder, 'small.png')).mtime;
 
         const request = http.request(
-            'http://localhost:3001/small.png',
+            'http://localhost:3000/small.png',
             {method: 'POST'},
             (response) => {
               const newMtime = fse.statSync(path.join(filesFolder, 'small.png')).mtime;
@@ -73,7 +73,7 @@ describe('streams/file-server-post', () => {
 
       it('при попытке создания слишком большого файла - ошибка 413', (done) => {
         const request = http.request(
-            'http://localhost:3001/big.png',
+            'http://localhost:3000/big.png',
             {method: 'POST'},
             (response) => {
               expect(
@@ -100,7 +100,7 @@ describe('streams/file-server-post', () => {
 
       it('успешное создание файла', (done) => {
         const request = http.request(
-            'http://localhost:3001/small.png',
+            'http://localhost:3000/small.png',
             {method: 'POST'},
             (response) => {
               expect(
@@ -122,7 +122,7 @@ describe('streams/file-server-post', () => {
 
       it('файл не должен оставаться на диске при обрыве соединения', (done) => {
         const request = http.request(
-            'http://localhost:3001/example.txt',
+            'http://localhost:3000/example.txt',
             {method: 'POST'},
             (response) => {
               expect.fail('there should be no response');
@@ -150,7 +150,7 @@ describe('streams/file-server-post', () => {
 
       it('если путь вложенный - возвращается ошибка 400', (done) => {
         const request = http.request(
-            'http://localhost:3001/nested/path',
+            'http://localhost:3000/nested/path',
             {method: 'POST'},
             (response) => {
               expect(response.statusCode, 'статус код ответа 400').to.equal(400);

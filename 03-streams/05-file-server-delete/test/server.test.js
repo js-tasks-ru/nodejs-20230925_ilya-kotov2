@@ -11,7 +11,7 @@ describe('streams/file-server-delete', () => {
   describe('тесты на файловый сервер', () => {
     before((done) => {
       fse.emptyDirSync(filesFolder);
-      server.listen(3001, done);
+      server.listen(3000, done);
     });
     after((done) => {
       fse.emptyDirSync(filesFolder);
@@ -31,7 +31,7 @@ describe('streams/file-server-delete', () => {
         );
 
         const request = http.request(
-            'http://localhost:3001/small.png',
+            'http://localhost:3000/small.png',
             {method: 'DELETE'},
             (response) => {
               expect(response.statusCode).to.equal(200);
@@ -52,7 +52,7 @@ describe('streams/file-server-delete', () => {
 
       it('если файла нет - ошибка 404', (done) => {
         const request = http.request(
-            'http://localhost:3001/small.png',
+            'http://localhost:3000/small.png',
             {method: 'DELETE'},
             (response) => {
               expect(response.statusCode).to.equal(404);
@@ -65,7 +65,7 @@ describe('streams/file-server-delete', () => {
 
       it('если путь вложенный - возвращается ошибка 400', (done) => {
         const request = http.request(
-            'http://localhost:3001/nested/path',
+            'http://localhost:3000/nested/path',
             {method: 'DELETE'},
             (response) => {
               expect(response.statusCode, 'статус код ответа 400').to.equal(400);
