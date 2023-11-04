@@ -38,7 +38,7 @@ describe('mongodb-mongoose/rest-api', () => {
       });
 
       await new Promise((resolve) => {
-        _server = app.listen(3002, resolve);
+        _server = app.listen(3000, resolve);
       });
     });
 
@@ -51,7 +51,7 @@ describe('mongodb-mongoose/rest-api', () => {
 
     describe('категории', () => {
       it('по запросу должен возвращаться список категорий', async () => {
-        const response = await client.get('http://localhost:3002/api/categories');
+        const response = await client.get('http://localhost:3000/api/categories');
 
         expect(
             response.data,
@@ -85,7 +85,7 @@ describe('mongodb-mongoose/rest-api', () => {
     describe('товары', () => {
       describe('получение списка товаров по подкатегории', () => {
         it('если товары есть в базе - должен вернуться массив с товарами', async () => {
-          const response = await client.get('http://localhost:3002/api/products');
+          const response = await client.get('http://localhost:3000/api/products');
 
           expect(
               response.data,
@@ -103,7 +103,7 @@ describe('mongodb-mongoose/rest-api', () => {
         });
 
         it('если товаров не найдено - должен возвращаться пустой массив', async () => {
-          const response = await client.get('http://localhost:3002/api/products', {
+          const response = await client.get('http://localhost:3000/api/products', {
             params: {subcategory: (new ObjectId()).toString()},
           });
 
@@ -119,7 +119,7 @@ describe('mongodb-mongoose/rest-api', () => {
         });
 
         it('товары по существующей подкатегории', async () => {
-          const response = await client.get('http://localhost:3002/api/products', {
+          const response = await client.get('http://localhost:3000/api/products', {
             params: {subcategory: category.subcategories[0].id},
           });
 
@@ -146,19 +146,19 @@ describe('mongodb-mongoose/rest-api', () => {
 
       describe('получение товара по идентификатору', () => {
         it('сервер должен вернуть ошибку если идентификатор невалидный', async () => {
-          const response = await client.get('http://localhost:3002/api/products/invalid-id');
+          const response = await client.get('http://localhost:3000/api/products/invalid-id');
           expect(response.status).to.equal(400);
         });
 
         it('сервер должен вернуть статус 404', async () => {
           const response = await client
-              .get('http://localhost:3002/api/products/5d208f60e13792398c2aa944');
+              .get('http://localhost:3000/api/products/5d208f60e13792398c2aa944');
 
           expect(response.status).to.equal(404);
         });
 
         it('сервер должен вернуть товар по его айди', async () => {
-          const response = await client.get(`http://localhost:3002/api/products/${product.id}`);
+          const response = await client.get(`http://localhost:3000/api/products/${product.id}`);
 
           expect(
               response.data,
