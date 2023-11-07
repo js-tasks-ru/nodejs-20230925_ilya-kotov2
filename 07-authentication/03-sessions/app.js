@@ -58,8 +58,6 @@ router.use(async (ctx, next) => {
 
   ctx.user = session.user;
   return next();
-
-  return next();
 });
 
 router.post('/login', login);
