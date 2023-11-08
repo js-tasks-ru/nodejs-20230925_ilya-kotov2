@@ -11,7 +11,7 @@ describe('streams/file-server-get', () => {
   describe('тесты на файловый сервер', () => {
     before((done) => {
       fse.emptyDirSync(filesFolder);
-      server.listen(3001, done);
+      server.listen(3000, done);
     });
 
     after((done) => {
@@ -33,7 +33,7 @@ describe('streams/file-server-get', () => {
 
         const content = fse.readFileSync(path.join(filesFolder, 'index.js'));
 
-        const request = http.request('http://localhost:3001/index.js', async (response) => {
+        const request = http.request('http://localhost:3000/index.js', async (response) => {
           expect(response.statusCode, 'статус код ответа 200').to.equal(200);
 
           const body = [];
@@ -53,7 +53,7 @@ describe('streams/file-server-get', () => {
       });
 
       it('если файла нет - отдается 404', (done) => {
-        const request = http.request('http://localhost:3001/not_exists.png', (response) => {
+        const request = http.request('http://localhost:3000/not_exists.png', (response) => {
           expect(response.statusCode, 'статус код ответа 404').to.equal(404);
           done();
         });
@@ -63,7 +63,7 @@ describe('streams/file-server-get', () => {
       });
 
       it('если путь вложенный - возвращается ошибка 400', (done) => {
-        const request = http.request('http://localhost:3001/nested/path', (response) => {
+        const request = http.request('http://localhost:3000/nested/path', (response) => {
           expect(response.statusCode, 'статус код ответа 400').to.equal(400);
           done();
         });
