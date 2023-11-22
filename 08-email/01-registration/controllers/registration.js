@@ -1,4 +1,4 @@
-const { v4: uuid } = require('uuid');
+const {v4: uuid} = require('uuid');
 const User = require('../models/User');
 const sendMail = require('../libs/sendMail');
 
@@ -14,10 +14,17 @@ module.exports.register = async (ctx, next) => {
   await user.save();
 
   await sendMail({
+<<<<<<< HEAD
     template: 'confirmation',
     locals: {token: verificationToken},
     to: user.email,
     subject: 'Подтвердите почту',
+=======
+    to: user.email,
+    subject: 'Подтвердите почту',
+    locals: {token: verificationToken},
+    template: 'confirmation',
+>>>>>>> 5f78af4cf1e0d0425a8694503618cf376a17af90
   });
 
   ctx.body = {status: 'ok'};
