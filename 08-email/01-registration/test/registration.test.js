@@ -14,7 +14,7 @@ describe('email/registration', () => {
   describe('регистрация', function () {
     let server;
     before((done) => {
-      server = app.listen(3000, done);
+      server = app.listen(3002, done);
     });
 
     beforeEach(async () => {
@@ -40,7 +40,7 @@ describe('email/registration', () => {
 
       const response = await request({
         method: 'post',
-        url: 'http://localhost:3000/api/register',
+        url: 'http://localhost:3002/api/register',
         data: newUserData,
       });
 
@@ -68,7 +68,7 @@ describe('email/registration', () => {
 
       const response = await request({
         method: 'post',
-        url: 'http://localhost:3000/api/register',
+        url: 'http://localhost:3002/api/register',
         data: userData,
       });
 
@@ -90,7 +90,7 @@ describe('email/registration', () => {
 
       const response = await request({
         method: 'post',
-        url: 'http://localhost:3000/api/login',
+        url: 'http://localhost:3002/api/login',
         data: {
           email: newUserData.email,
           password: newUserData.password,
@@ -116,7 +116,7 @@ describe('email/registration', () => {
 
         const response = await request({
           method: 'post',
-          url: 'http://localhost:3000/api/confirm',
+          url: 'http://localhost:3002/api/confirm',
           data: {
             verificationToken: newUserData.verificationToken,
           },
@@ -133,7 +133,7 @@ describe('email/registration', () => {
     it('при запросе /confirm с неправильным токеном - ошибка', async () => {
       const response = await request({
         method: 'post',
-        url: 'http://localhost:3000/api/confirm',
+        url: 'http://localhost:3002/api/confirm',
         data: {
           verificationToken: 'randomtoken',
         },

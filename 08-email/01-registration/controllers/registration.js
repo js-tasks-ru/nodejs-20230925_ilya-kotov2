@@ -14,10 +14,10 @@ module.exports.register = async (ctx, next) => {
   await user.save();
 
   await sendMail({
+    template: 'confirmation',
+    locals: {token: verificationToken},
     to: user.email,
     subject: 'Подтвердите почту',
-    locals: {token: verificationToken},
-    template: 'confirmation',
   });
 
   ctx.body = {status: 'ok'};
